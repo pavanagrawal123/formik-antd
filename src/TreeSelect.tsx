@@ -6,13 +6,16 @@ import { TreeSelectProps as $TreeSelectProps } from "antd/lib/tree-select";
 
 export type TreeSelectProps = FormikFieldProps & $TreeSelectProps & { children: React.ReactNode };
 
-export const TreeSelect = ({ name, validate, ...restProps }: TreeSelectProps) => (
+export const TreeSelect = ({ name, validate, onChange, ...restProps }: TreeSelectProps) => (
   <Field name={name} validate={validate}>
     {({ field: { value }, form }: FieldProps) => (
       <$TreeSelect
         value={value}
-        onChange={e => form.setFieldValue(name, e.valueOf())}
-        onBlur={e => form.setFieldTouched(name)}
+        onBlur={() => form.setFieldTouched(name)}
+        onChange={(value, node, extra) => {
+          form.setFieldValue(name, value);
+          onChange && onChange(value, node, extra)
+        }}
         {...restProps}
       />
     )}
